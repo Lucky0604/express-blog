@@ -6,13 +6,17 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var settings = require('./settings');
-
+var flash = require('connect-flash');
 var routes = require('./routes/index');
 var app = express();
+
+
 app.set('port', process.env.PORT || 3000);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+// use flash
+app.use(flash());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

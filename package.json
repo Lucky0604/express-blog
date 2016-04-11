@@ -18,6 +18,7 @@
     "serve-favicon": "^2.3.0"
   },
   "devDependencies": {
+    "connect-flash": "^0.1.1",
     "connect-mongo": "^1.1.0",
     "ejs": "^2.4.1",
     "express-session": "^1.13.0"
