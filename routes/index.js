@@ -1,16 +1,25 @@
-var flash = require('connect-flash');
 var crypto = require('crypto');
 var User = require('../models/users.js');
 
 module.exports = function(app) {
     app.get('/', function(req, res) {
-        res.render('index', {title: 'MainPage'});
+        res.render('index', {
+            title: 'MainPage',
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
     });
 
     //route configuration
     //------------------------------------------------------------------------------------
     app.get('/reg', function(req, res) {
-        res.render('reg', {title: 'Regist'});
+        res.render('reg', {
+            title: 'Regist',
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
     });
     app.post('/reg', function(req, res) {
         var name = req.body.name,

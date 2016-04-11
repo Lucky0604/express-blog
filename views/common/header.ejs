@@ -14,9 +14,24 @@
         <!-- navbar -->
         <nav>
             <span><a href="/" title="Homepage">Home</a></span>
-            <span><a href="/login" title="Login">Login</a></span>
-            <span><a href="/reg" title="Regist">Regist</a></span>
+            <% if (user) {%>
+                <span><a href="/post">Post</a></span>
+                <span><a href="/logout">Logout</a></span>
+            <% } else { %>
+                <span><a href="/login">Login</a></span>
+                <span><a href="/reg">Regist</a></span>
+            <% } %>
         </nav>
 
         <!-- article -->
         <article>
+            <% if (success) { %>
+                <div>
+                    <%= success %>
+                </div>
+            <% } %>
+            <% if (error) { %>
+                <div>
+                    <%= error %>
+                </div>
+            <% } %>
