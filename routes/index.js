@@ -62,10 +62,32 @@ module.exports = function(app) {
         })
     });
     app.get('/login', function(req, res) {
-        res.render('login', {title: 'Login'});
+        res.render('login', {
+            title: 'Login',
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
     });
     app.post('/login', function(req, res) {
-
+        // create the password's md5 value
+        var md5 = crypto.createHash('md5'),
+            password = md5.update(req.body.password).digest('hex');
+        // check whether the use already exists
+        User.get(req.body.name, function(err, user) {
+            if (!user) {
+                req.flash('error', 'User is not exist');
+                return res.redirect('/login');
+            }
+            // check whether the password as the same
+            if (user.password != password) {
+                req.flash('error', 'password is error');
+                return res.redirect('/login');
+            }
+            req.session.user = user;
+            req.flash('success', 'Login successfully!');
+            res.redirect('/');
+        })
     });
     app.get('/post', function(req, res) {
         res.render('post', {title: 'Post'});
@@ -74,6 +96,8 @@ module.exports = function(app) {
 
     });
     app.get('/logout', function(req,res) {
-
+        req.session.user = null;
+        req.flash('success', 'Logout successfully!');
+        res.redirect('/');
     });
 }
