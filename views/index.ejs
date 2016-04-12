@@ -1,3 +1,10 @@
 <%- include common/header %>
-This is Home page
+<% posts.forEach(function(post, index) { %>
+<p><h2><a href="#"><%= post.title %></a></h2></p>
+<p class="info">
+    Author: <a href="#"><%= post.name %></a> |
+    Time: <%= post.time.minute %>
+</p>
+<p><%- post.post %></p>
+<% }) %>
 <%- include common/footer %>

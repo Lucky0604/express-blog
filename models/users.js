@@ -25,7 +25,7 @@ User.prototype.save = function(cb) {
             if (err) {
                 mongodb.close();
                 return cb(err);
-            };
+            }
             collection.insert(user, {
                 safe: true
             }, function(err, user) {
@@ -34,10 +34,10 @@ User.prototype.save = function(cb) {
                     return cb(err);
                 }
                 cb(null, user[0]);      // success, err is null. and return the user's document
-            })
-        })
-    })
-}
+            });
+        });
+    });
+};
 
 // read the user's info
 User.get = function(name, cb) {
@@ -51,7 +51,7 @@ User.get = function(name, cb) {
             if (err) {
                 mongodb.close();
                 return cb(err);
-            };
+            }
             // search username(key: name) document
             collection.findOne({
                 name: name
@@ -61,8 +61,7 @@ User.get = function(name, cb) {
                     return cb(err);
                 }
                 cb(null, user);
-            })
-        })
-
-    })
-}
+            });
+        });
+    });
+};

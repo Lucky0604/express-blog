@@ -1,13 +1,20 @@
 var crypto = require('crypto');
 var User = require('../models/users.js');
+var Post = require('../models/post.js');
 
 module.exports = function(app) {
     app.get('/', function(req, res) {
-        res.render('index', {
-            title: 'MainPage',
-            user: req.session.user,
-            success: req.flash('success').toString(),
-            error: req.flash('error').toString()
+        Post.get(null, function(err, posts) {
+            if (err) {
+                posts = [];
+            }
+            res.render('index', {
+                title: 'MainPage',
+                user: req.session.user,
+                posts: posts,
+                success: req.flash('success').toString(),
+                error: req.flash('error').toString()
+            });
         });
     });
 
@@ -61,8 +68,8 @@ module.exports = function(app) {
                 req.session.user = user;    // user's info saved in session
                 req.flash('success', 'Regist successfully!');
                 res.redirect('/');
-            })
-        })
+            });
+        });
     });
 
     app.get('/login', checkNotLogin);
@@ -94,17 +101,31 @@ module.exports = function(app) {
             req.session.user = user;
             req.flash('success', 'Login successfully!');
             res.redirect('/');
-        })
+        });
     });
 
     app.get('/post', checkLogin);
     app.get('/post', function(req, res) {
-        res.render('post', {title: 'Post'});
+        res.render('post', {
+            title: 'Post',
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
     });
 
     app.post('/post', checkLogin);
     app.post('/post', function(req, res) {
-
+        var currentUser = req.session.user,
+            post = new Post(currentUser.name, req.body.title, req.body.post);
+        post.save(function(err) {
+            if (err) {
+                req.flash('error', err);
+                return res.redirect('/');
+            }
+            req.flash('success', 'Post successfully!');
+            res.redirect('/');
+        });
     });
 
     app.get('/logout', checkLogin);
@@ -130,4 +151,4 @@ module.exports = function(app) {
         }
         next();
     }
-}
+};
