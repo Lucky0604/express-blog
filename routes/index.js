@@ -13,6 +13,7 @@ module.exports = function(app) {
 
     //route configuration
     //------------------------------------------------------------------------------------
+    app.get('/reg', checkNotLogin);
     app.get('/reg', function(req, res) {
         res.render('reg', {
             title: 'Regist',
@@ -21,6 +22,8 @@ module.exports = function(app) {
             error: req.flash('error').toString()
         });
     });
+
+    app.post('/reg', checkNotLogin);
     app.post('/reg', function(req, res) {
         var name = req.body.name,
             password = req.body.password,
@@ -61,6 +64,8 @@ module.exports = function(app) {
             })
         })
     });
+
+    app.get('/login', checkNotLogin);
     app.get('/login', function(req, res) {
         res.render('login', {
             title: 'Login',
@@ -69,6 +74,8 @@ module.exports = function(app) {
             error: req.flash('error').toString()
         });
     });
+
+    app.post('/login', checkNotLogin);
     app.post('/login', function(req, res) {
         // create the password's md5 value
         var md5 = crypto.createHash('md5'),
@@ -89,15 +96,38 @@ module.exports = function(app) {
             res.redirect('/');
         })
     });
+
+    app.get('/post', checkLogin);
     app.get('/post', function(req, res) {
         res.render('post', {title: 'Post'});
     });
+
+    app.post('/post', checkLogin);
     app.post('/post', function(req, res) {
 
     });
+
+    app.get('/logout', checkLogin);
     app.get('/logout', function(req,res) {
         req.session.user = null;
         req.flash('success', 'Logout successfully!');
         res.redirect('/');
     });
+
+    // authenticate about login user and new user
+    function checkLogin(req, res, next) {
+        if (!req.session.user) {
+            req.flash('error', 'Not login yet!');
+            res.redirect('/login');
+        }
+        next();
+    }
+
+    function checkNotLogin(req, res, next) {
+        if (req.session.user) {
+            req.flash('error', 'Already login!');
+            res.redirect('back');
+        }
+        next();
+    }
 }
