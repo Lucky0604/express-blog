@@ -1,4 +1,5 @@
 var express = require('express');
+var multer = require('multer');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -10,6 +11,12 @@ var flash = require('connect-flash');
 var routes = require('./routes/index');
 var app = express();
 
+app.use(multer({
+    dest: './public/images',
+    rename: function(fieldname, filename) {
+        return filename;
+    }
+}));
 
 app.set('port', process.env.PORT || 3000);
 // view engine setup
@@ -36,6 +43,7 @@ app.use(session({
         url: 'mongodb://localhost/blog'
     })
 }))
+
 
 routes(app);
 
