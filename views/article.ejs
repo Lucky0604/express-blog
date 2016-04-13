@@ -1,0 +1,11 @@
+<% include common/header %>
+
+<p class="info">
+    Author: <a href="/u/<%= post.name %>"><%= post.name %></a> |
+    Date: <%= post.time.minute %>
+</p>
+<p>
+    <%- post.post %>
+</p>
+
+<% include common/footer %>

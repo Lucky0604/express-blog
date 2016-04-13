@@ -54,7 +54,7 @@ Post.prototype.save = function(cb) {
 };
 
 // Read the post's info
-Post.get = function(name, cb) {
+Post.getAll = function(name, cb) {
     // open the database
     mongodb.open(function(err, db) {
         if (err) {
@@ -89,3 +89,33 @@ Post.get = function(name, cb) {
     });
 
 };
+
+// get one article
+Post.getOne = function(name, day, title, cb) {
+    // open the database
+    mongodb.open(function(err, db) {
+        if (err) {
+            return cb(err);
+        }
+        // read posts collection
+        db.collection('posts', function(err, collection) {
+            if (err) {
+                mongodb.close();
+                return cb(err);
+            }
+
+            collection.findOne({
+                "name": name,
+                "title": title,
+                "time.day": day
+            }, function(err, doc) {
+                mongodb.close();
+                if (err) {
+                    return cb(err);
+                }
+                doc.post = markdown.toHTML(doc.post);
+                cb(null, doc);
+            })
+        })
+    })
+}
