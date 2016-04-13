@@ -118,4 +118,85 @@ Post.getOne = function(name, day, title, cb) {
             })
         })
     })
+};
+
+Post.edit = function(name, day, title, cb) {
+    // open the database
+    mongodb.open(function(err, db) {
+        if (err) {
+            return cb(err);
+        }
+        // read posts collection
+        db.collection('posts', function(err, collection) {
+            if (err) {
+                mongodb.close();
+                return cb(err);
+            }
+            collection.findOne({
+                "name": name,
+                "title": title,
+                "time.day": day
+            }, function(err, doc) {
+                mongodb.close();
+                if (err) {
+                    return cb(err);
+                }
+                cb(null, doc);
+            })
+        })
+    })
+}
+
+Post.update = function(name, day, title, post, cb) {
+    mongodb.open(function(err, db) {
+        if (err) {
+            return cb(err);
+        };
+        db.collection('posts', function(err, collection) {
+            if (err) {
+                mongodb.close();
+                return cb(err);
+            }
+            collection.update({
+                "name": name,
+                "title": title,
+                "time.day": day
+            }, {
+                $set: {post: post}
+            }, function(err) {
+                mongodb.close();
+                if (err) {
+                    return cb(err);
+                }
+                cb(null);
+            })
+        })
+    })
+}
+
+Post.remove = function(name, day, title, cb) {
+    mongodb.open(function(err, db) {
+        if (err) {
+            return cb(err);
+        };
+        db.collection('posts', function(err, collection) {
+            if (err) {
+                mongodb.close();
+                return cb(err);
+            }
+            collection.remove({
+                "name": name,
+                "title": title,
+                "time.day": day
+            }, {
+                w: 1
+            }, function(err) {
+                mongodb.close();
+                if (err) {
+                    return cb(err);
+                }
+                cb(null);
+            })
+        })
+    })
 }
